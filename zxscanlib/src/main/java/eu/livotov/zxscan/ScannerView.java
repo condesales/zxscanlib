@@ -25,8 +25,7 @@ import eu.livotov.zxscan.util.SoundPlayer;
  * (c) Livotov Labs Ltd. 2012
  * Date: 03/11/2014
  */
-public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
-{
+public class ScannerView extends FrameLayout implements CAMView.CAMViewListener {
     public final static long DEFAULT_SAMECODE_RESCAN_PROTECTION_TIME_MS = 5000;
     public final static long DEFAULT_DECODE_THROTTLE_MS = 300;
 
@@ -45,14 +44,28 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     private DecoderThread decoderThread;
     private DecoderResultHandler decoderResultHandler;
 
-    public ScannerView(final Context context)
-    {
+    public ScannerView(final Context context) {
         super(context);
         initUI();
     }
 
-    protected void initUI()
-    {
+    public ScannerView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        initUI();
+    }
+
+    public ScannerView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initUI();
+    }
+
+    @TargetApi(21)
+    public ScannerView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        initUI();
+    }
+
+    protected void initUI() {
         final View root = LayoutInflater.from(getContext()).inflate(getScannerLayoutResource(), this);
         camera = (CAMView) root.findViewById(R.id.zxscanlib_camera);
         hud = (ImageView) root.findViewById(R.id.cameraHud);
@@ -61,28 +74,8 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         soundPlayer = new SoundPlayer(getContext());
     }
 
-    protected int getScannerLayoutResource()
-    {
+    protected int getScannerLayoutResource() {
         return R.layout.zxscanlib_view_scanner;
-    }
-
-    public ScannerView(final Context context, final AttributeSet attrs)
-    {
-        super(context, attrs);
-        initUI();
-    }
-
-    public ScannerView(final Context context, final AttributeSet attrs, final int defStyleAttr)
-    {
-        super(context, attrs, defStyleAttr);
-        initUI();
-    }
-
-    @TargetApi(21)
-    public ScannerView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes)
-    {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        initUI();
     }
 
     /**
@@ -90,16 +83,14 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
      *
      * @return
      */
-    public Collection<CameraEnumeration> getAvailableCameras()
-    {
+    public Collection<CameraEnumeration> getAvailableCameras() {
         return CAMView.enumarateCameras();
     }
 
     /**
      * Starts scanner, using device default camera
      */
-    public void startScanner()
-    {
+    public void startScanner() {
         startScanner(null);
     }
 
@@ -108,23 +99,18 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
      *
      * @param camInfo
      */
-    public void startScanner(CameraEnumeration camInfo)
-    {
+    public void startScanner(CameraEnumeration camInfo) {
         lastDataDecoded = null;
         initThreadingSubsystem();
 
-        if (camInfo == null)
-        {
+        if (camInfo == null) {
             camera.start();
-        }
-        else
-        {
+        } else {
             camera.start(camInfo.getCameraId());
         }
     }
 
-    private void initThreadingSubsystem()
-    {
+    private void initThreadingSubsystem() {
         decoderResultHandler = new DecoderResultHandler();
         decoderThread = new DecoderThread(decoderResultHandler, decoder);
         decoderThread.start();
@@ -133,16 +119,13 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
     /**
      * Stops currently running scanner
      */
-    public void stopScanner()
-    {
+    public void stopScanner() {
         shutodownThreadingSubsystem();
         camera.stop();
     }
 
-    private void shutodownThreadingSubsystem()
-    {
-        if (decoderThread != null)
-        {
+    private void shutodownThreadingSubsystem() {
+        if (decoderThread != null) {
             decoderThread.shutdown();
         }
 
@@ -150,169 +133,131 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         decoderThread = null;
     }
 
-    public long getSameCodeRescanProtectionTime()
-    {
+    public long getSameCodeRescanProtectionTime() {
         return sameCodeRescanProtectionTime;
     }
 
-    public void setSameCodeRescanProtectionTime(long sameCodeRescanProtectionTime)
-    {
+    public void setSameCodeRescanProtectionTime(long sameCodeRescanProtectionTime) {
         this.sameCodeRescanProtectionTime = sameCodeRescanProtectionTime;
     }
 
-    public long getDecodeThrottleMillis()
-    {
+    public long getDecodeThrottleMillis() {
         return decodeThrottleMillis;
     }
 
-    public void setDecodeThrottleMillis(long throttle)
-    {
+    public void setDecodeThrottleMillis(long throttle) {
         this.decodeThrottleMillis = throttle;
     }
 
-    public CAMView getCamera()
-    {
+    public CAMView getCamera() {
         return camera;
     }
 
-    public ScannerViewEventListener getScannerViewEventListener()
-    {
+    public ScannerViewEventListener getScannerViewEventListener() {
         return scannerViewEventListener;
     }
 
-    public void setScannerViewEventListener(final ScannerViewEventListener scannerViewEventListener)
-    {
+    public void setScannerViewEventListener(final ScannerViewEventListener scannerViewEventListener) {
         this.scannerViewEventListener = scannerViewEventListener;
     }
 
-    public void setScannerSoundAudioResource(final int scannerSoundAudioResource)
-    {
+    public void setScannerSoundAudioResource(final int scannerSoundAudioResource) {
         this.scannerSoundAudioResource = scannerSoundAudioResource;
     }
 
-    public boolean isPlaySound()
-    {
+    public boolean isPlaySound() {
         return playSound;
     }
 
-    public void setPlaySound(final boolean playSound)
-    {
+    public void setPlaySound(final boolean playSound) {
         this.playSound = playSound;
     }
 
-    public void setHudImageResource(int res)
-    {
-        if (hud != null)
-        {
+    public void setHudImageResource(int res) {
+        if (hud != null) {
             hud.setBackgroundResource(res);
             setHudVisible(res != 0);
         }
     }
 
-    public void setHudVisible(boolean visible)
-    {
-        if (hud != null)
-        {
+    public void setHudVisible(boolean visible) {
+        if (hud != null) {
             hud.setVisibility(visible ? VISIBLE : INVISIBLE);
         }
     }
 
-    public void onCameraReady(Camera camera)
-    {
-        if (scannerViewEventListener != null)
-        {
+    public void onCameraReady(Camera camera) {
+        if (scannerViewEventListener != null) {
             scannerViewEventListener.onScannerReady();
         }
     }
 
-    public void onCameraStopped()
-    {
-        if (scannerViewEventListener != null)
-        {
+    public void onCameraStopped() {
+        if (scannerViewEventListener != null) {
             scannerViewEventListener.onScannerStopped();
         }
     }
 
-    public void onCameraError(final int err, final Camera camera)
-    {
-        if (scannerViewEventListener != null)
-        {
+    public void onCameraError(final int err, final Camera camera) {
+        if (scannerViewEventListener != null) {
             scannerViewEventListener.onScannerFailure(err);
         }
     }
 
-    public void onCameraOpenError(final Throwable err)
-    {
+    public void onCameraOpenError(final Throwable err) {
         shutodownThreadingSubsystem();
-        if (scannerViewEventListener != null)
-        {
+        if (scannerViewEventListener != null) {
             scannerViewEventListener.onScannerFailure(-1);
         }
     }
 
-    public boolean onPreviewData(final byte[] bytes, final int i, final Camera.Size size)
-    {
+    public boolean onPreviewData(final byte[] bytes, final int i, final Camera.Size size) {
         final long currentTime = System.currentTimeMillis();
 
-        if (decoderThread != null && currentTime - lastDataSubmittedTimestamp > decodeThrottleMillis)
-        {
+        if (decoderThread != null && currentTime - lastDataSubmittedTimestamp > decodeThrottleMillis) {
             lastDataSubmittedTimestamp = currentTime;
             decoderThread.submitBarcodeRecognitionTask(bytes, size.width, size.height);
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
 
-    private void processRecognizedBarcode(String data)
-    {
-        if (TextUtils.isEmpty(lastDataDecoded) || !lastDataDecoded.equalsIgnoreCase(data) || (System.currentTimeMillis() - lastDataDecodedTimestamp) > sameCodeRescanProtectionTime)
-        {
+    private void processRecognizedBarcode(String data) {
+        if (TextUtils.isEmpty(lastDataDecoded) || !lastDataDecoded.equalsIgnoreCase(data) || (System.currentTimeMillis() - lastDataDecodedTimestamp) > sameCodeRescanProtectionTime) {
             lastDataDecoded = data;
             lastDataDecodedTimestamp = System.currentTimeMillis();
             notifyBarcodeRead(data);
         }
 
-        if (camera != null)
-        {
+        if (camera != null) {
             camera.enablePreviewGrabbing();
         }
     }
 
-    protected void notifyBarcodeRead(final String data)
-    {
-        if (scannerViewEventListener != null)
-        {
-            if (!TextUtils.isEmpty(data))
-            {
-                if (scannerViewEventListener.onCodeScanned(data))
-                {
+    protected void notifyBarcodeRead(final String data) {
+        if (scannerViewEventListener != null) {
+            if (!TextUtils.isEmpty(data)) {
+                if (scannerViewEventListener.onCodeScanned(data)) {
                     beep();
                 }
             }
         }
     }
 
-    private void beep()
-    {
-        if (playSound && scannerSoundAudioResource != 0)
-        {
+    private void beep() {
+        if (playSound && scannerSoundAudioResource != 0) {
             soundPlayer.playRawResource(scannerSoundAudioResource, false);
         }
     }
 
-    private void processEmptyBarcode()
-    {
-        if (camera != null)
-        {
+    private void processEmptyBarcode() {
+        if (camera != null) {
             camera.enablePreviewGrabbing();
         }
     }
 
-    public interface ScannerViewEventListener
-    {
+    public interface ScannerViewEventListener {
         void onScannerReady();
 
         void onScannerStopped();
@@ -322,18 +267,13 @@ public class ScannerView extends FrameLayout implements CAMView.CAMViewListener
         boolean onCodeScanned(final String data);
     }
 
-    class DecoderResultHandler extends Handler
-    {
+    class DecoderResultHandler extends Handler {
 
         @Override
-        public void handleMessage(Message msg)
-        {
-            if (msg.what == R.id.zxscanlib_core_message_decode_result_ok)
-            {
+        public void handleMessage(Message msg) {
+            if (msg.what == R.id.zxscanlib_core_message_decode_result_ok) {
                 processRecognizedBarcode((String) msg.obj);
-            }
-            else if (msg.what == R.id.zxscanlib_core_message_decode_result_nodata)
-            {
+            } else if (msg.what == R.id.zxscanlib_core_message_decode_result_nodata) {
                 processEmptyBarcode();
             }
         }

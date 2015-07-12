@@ -8,71 +8,46 @@ import android.util.Log;
  * (c) Livotov Labs Ltd. 2012
  * Date: 03/11/2014
  */
-public class SoundPlayer implements MediaPlayer.OnPreparedListener
-{
+public class SoundPlayer implements MediaPlayer.OnPreparedListener {
 
     private MediaPlayer mPlayer;
     private Context ctx;
 
-    public SoundPlayer(Context ctx)
-    {
+    public SoundPlayer(Context ctx) {
         this.ctx = ctx;
-        initPlayer();
     }
 
-    private synchronized void initPlayer()
-    {
-    }
-
-    public void playRawResource(int rawResource, boolean loop)
-    {
+    public void playRawResource(int rawResource, boolean loop) {
         stop();
-        try
-        {
+        try {
             mPlayer = MediaPlayer.create(ctx, rawResource);
-            if (loop)
-            {
-                mPlayer.setLooping(loop);
-            }
+            mPlayer.setLooping(loop);
             mPlayer.start();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Log.e(getClass().getSimpleName(), "Could not play audio file: " + ex.getMessage());
             mPlayer = null;
         }
     }
 
-    public void stop()
-    {
-        if (mPlayer != null)
-        {
-            try
-            {
-                if (mPlayer.isPlaying())
-                {
+    public void stop() {
+        if (mPlayer != null) {
+            try {
+                if (mPlayer.isPlaying()) {
                     mPlayer.stop();
                 }
-
                 mPlayer.release();
                 mPlayer = null;
-            }
-            catch (Throwable err)
-            {
+            } catch (Throwable err) {
                 Log.e(getClass().getSimpleName(), "EXCEPTION: " + err.getMessage());
             }
         }
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp)
-    {
-        try
-        {
+    public void onPrepared(MediaPlayer mp) {
+        try {
             mp.start();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             stop();
         }
     }
